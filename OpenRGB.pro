@@ -10,6 +10,7 @@
 QT +=                                                                                           \
     core                                                                                        \
     gui                                                                                         \
+    serialport                                                                                      \
 
 #-----------------------------------------------------------------------------------------------#
 # Set compiler to use C++17 to make std::filesystem available                                   #

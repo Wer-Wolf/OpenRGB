@@ -10,57 +10,9 @@
 #ifndef SERIAL_PORT_H
 #define SERIAL_PORT_H
 
+#include <QSerialPort>
 #include <string.h>
 #include <stdio.h>
-
-#ifdef _WIN32
-/*---------------------------------------------------------*\
-| Windows interferes with std::max unless NOMINMAX defined  |
-\*---------------------------------------------------------*/
-#define NOMINMAX
-#include <windows.h>
-
-#endif /* _WIN32 */
-
-#ifdef __linux__
-
-#include <fcntl.h>
-#include <unistd.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-
-//these types are redefined in asm/termios.h
-//to prevent compiler errors from multply
-//defining them, use a #define to rename them -
-//essentially to undef them before they are redefined
-#define winsize undefine_winsize
-#define termio undefine_termio
-#define termios undefine_termios
-#define sgttyb undefine_sgttyb
-#define tchars undefine_tchars
-#define ltchars undefine_ltchars
-
-#include <asm/termios.h>
-#include <asm/ioctls.h>
-
-//ppc has c_ispeed/c_ospeed in termios and termios2 doesn't exist
-#if defined(__powerpc__)
-#define termios2 termios
-#define TCGETS2 TCGETS
-#define TCSETS2 TCSETS
-#endif
-
-#endif /* __linux__ */
-
-#ifdef __APPLE__
-
-#include <fcntl.h>
-#include <unistd.h>
-#include <termios.h>
-#include <sys/ioctl.h>
-#include <IOKit/serial/ioss.h>
-
-#endif /* __APPLE__ */
 
 /*-------------------------------------------------------------------------*\
 |  Serial Port Enums                                                        |
@@ -131,19 +83,7 @@ public:
     int serial_available();
 
 private:
-    char                    port_name[1024];
-    unsigned int            baud_rate;
-    serial_port_parity      parity;
-    serial_port_size        size;
-    serial_port_stop_bits   stop_bits;
-    bool                    flow_control;
-
-#ifdef _WIN32
-    HANDLE file_descriptor;
-    DCB dcb;
-#else
-    int file_descriptor;
-#endif
+    QSerialPort serial;
 };
 
-#endif
+#endif  /* SERIAL_PORT_H */
