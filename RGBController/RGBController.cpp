@@ -1601,12 +1601,16 @@ void RGBController::SetMode(int mode)
 
 void RGBController::RegisterUpdateCallback(RGBControllerCallback new_callback, void * new_callback_arg)
 {
+    UpdateMutex.lock();
     UpdateCallbacks.push_back(new_callback);
     UpdateCallbackArgs.push_back(new_callback_arg);
+    UpdateMutex.unlock();
 }
 
 void RGBController::UnregisterUpdateCallback(void * callback_arg)
 {
+    UpdateMutex.lock();
+
     for(unsigned int callback_idx = 0; callback_idx < UpdateCallbackArgs.size(); callback_idx++ )
     {
         if(UpdateCallbackArgs[callback_idx] == callback_arg)
@@ -1617,12 +1621,16 @@ void RGBController::UnregisterUpdateCallback(void * callback_arg)
             break;
         }
     }
+
+    UpdateMutex.unlock();
 }
 
 void RGBController::ClearCallbacks()
 {
+    UpdateMutex.lock();
     UpdateCallbacks.clear();
     UpdateCallbackArgs.clear();
+    UpdateMutex.unlock();
 }
 
 void RGBController::SignalUpdate()
